@@ -45,10 +45,10 @@ class Config {
 
   public async runApp(): Promise<void> {
     try {
-      await this.listenAsync();
-      console.log(`Server is running on port ${this.PORT}`);
       await pool.connect();
       console.log("Connected to the PostgreSQL database");
+      await this.listenAsync();
+      console.log(`Server is running on port ${this.PORT}`);
     } catch (error) {
       console.error(`Error running the application:`, error);
       process.exit(1);
