@@ -1,6 +1,6 @@
 import express, { Application } from "express";
 import { Server } from "http";
-import pool from "./db";
+//  import pool from "./db";
 
 class Config {
   private readonly PORT: number = Number(process.env.PORT) || 3000;
@@ -45,8 +45,8 @@ class Config {
 
   public async runApp(): Promise<void> {
     try {
-      await pool.connect();
-      console.log("Connected to the PostgreSQL database");
+      // await pool.connect();
+      // console.log("Connected to the PostgreSQL database");
       await this.listenAsync();
       console.log(`Server is running on port ${this.PORT}`);
     } catch (error) {
