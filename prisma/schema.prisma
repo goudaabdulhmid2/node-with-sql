@@ -10,7 +10,20 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  // filed | typeOfFiled "? mean is optional" | 
+  id          Int             @id @default(autoincrement())
+  email       String          @unique
+  name        String?
+  isAdmin     Boolean
+  preferences Json
+  blob        Bytes // for store somthing like file or big data
+  blob1       Unsupported("")
+}
+
+model Post {
+  // Desimal represent a much wider range
+  id        Int      @id @default(autoincrement())
+  rating    Float
+  createdAt DateTime
+  updatedAt DateTime
 }
