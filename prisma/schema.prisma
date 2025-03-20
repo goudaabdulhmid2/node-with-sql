@@ -1,7 +1,9 @@
+// You can have multiple genrator
 generator client {
   provider = "prisma-client-js"
 }
 
+// Yoc can only have one date source and must havea provider
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
