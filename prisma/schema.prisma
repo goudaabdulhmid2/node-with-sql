@@ -11,19 +11,39 @@ datasource db {
 
 model User {
   // filed | typeOfFiled "? mean is optional" | 
-  id          Int             @id @default(autoincrement())
-  email       String          @unique
-  name        String?
-  isAdmin     Boolean
-  preferences Json
-  blob        Bytes // for store somthing like file or big data
-  blob1       Unsupported("")
+  id             String          @id @default(uuid())
+  email          String          @unique
+  name           String?
+  isAdmin        Boolean
+  blob           Bytes // for store somthing like file or big data
+  blob1          Unsupported("")
+  writtenPosts   Post[]          @relation("writtenPosts") // you need to do this extra step if u have more than one relation
+  favoritePosts  Post[]          @relation("favoritePosts")
+  UserPreference UserPreference?
+}
+
+model UserPreference {
+  id           String  @id @default(uuid())
+  emailUpdates Boolean
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String  @unique
 }
 
 model Post {
   // Desimal represent a much wider range
-  id        Int      @id @default(autoincrement())
-  rating    Float
-  createdAt DateTime
-  updatedAt DateTime
+  id            String     @id @default(uuid())
+  rating        Float
+  createdAt     DateTime
+  updatedAt     DateTime
+  author        User       @relation("writtenPosts", fields: [authorId], references: [id])
+  authorId      String
+  favoritedBy   User?      @relation("favoritePosts", fields: [favoritedById], references: [id])
+  favoritedById String?
+  categories    Category[]
+}
+
+// m:m relation with post
+model Category {
+  id    String @id @default(uuid())
+  posts Post[]
 }
