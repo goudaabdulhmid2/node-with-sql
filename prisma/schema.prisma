@@ -12,14 +12,17 @@ datasource db {
 model User {
   // filed | typeOfFiled "? mean is optional" | 
   id             String          @id @default(uuid())
+  age            Int
   email          String          @unique
-  name           String?
+  name           String
   isAdmin        Boolean
-  blob           Bytes // for store somthing like file or big data
-  blob1          Unsupported("")
   writtenPosts   Post[]          @relation("writtenPosts") // you need to do this extra step if u have more than one relation
   favoritePosts  Post[]          @relation("favoritePosts")
   UserPreference UserPreference?
+
+  // Block level attrbute
+  @@unique([age, name]) // here said we need every age and name is unique, means we can't have same user with same name and age 
+  @@index([email])
 }
 
 model UserPreference {
@@ -32,18 +35,22 @@ model UserPreference {
 model Post {
   // Desimal represent a much wider range
   id            String     @id @default(uuid())
-  rating        Float
-  createdAt     DateTime
-  updatedAt     DateTime
+  title         String
+  averageRating Float
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt // everytime updated post, it's going auto set this updatedAt field
   author        User       @relation("writtenPosts", fields: [authorId], references: [id])
   authorId      String
   favoritedBy   User?      @relation("favoritePosts", fields: [favoritedById], references: [id])
   favoritedById String?
   categories    Category[]
+
+  // @@id([title, authorId]) // composit id
 }
 
 // m:m relation with post
 model Category {
   id    String @id @default(uuid())
+  name  String @unique
   posts Post[]
 }
