@@ -39,3 +39,16 @@ app.get("/", async (req, res) => {
     console.log(err);
   }
 });
+
+app.delete('/',async (req,res)=>{
+  try{
+    await prisma.user.deleteMany();
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    })
+  }catch(err){
+    console.log(err);
+
+  }
+})
