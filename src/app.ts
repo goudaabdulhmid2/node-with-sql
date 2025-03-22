@@ -4,7 +4,9 @@ import morgan from 'morgan';
 
 import config from "./config/config";
 const app = config.getApp();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({log:['query']});
+
+
 app.use(express.json({limit:'100mb'}));
 app.use(express.urlencoded({ extended:true , limit:'100mb'}));
 
@@ -14,12 +16,34 @@ if(process.env.NODE_ENV === 'development'){
 
 app.post('/', async (req,res)=>{
   try{
-  const {email,name} = req.body;
+  const {email,name,age,emailUpdates} = req.body;
+  // prisma.user,createMany([])
   const newUser = await prisma.user.create({
     data:{
-      email,
-      name
-  }}) 
+       name,
+       email,
+       age,
+       UserPreference:{
+        create:{
+          emailUpdates
+        }
+       },     
+  },
+  // include:{
+  //   UserPreference:true
+  // },
+  select:{
+    // u either use the select or include
+    name:true,
+    UserPreference:{
+      select:{
+        id:true
+      }
+    }
+  }
+}) 
+
+  console.log(newUser);
 
   res.status(201).json({
     message:'done',
