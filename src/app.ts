@@ -54,11 +54,22 @@ app.post("/", async (req, res) => {
     console.log(err);
   }
 });
-app.get("/", async (req, res) => {
+app.get("/:id", async (req, res) => {
   try {
     let data;
 
-    data = await prisma.user.findMany();
+    data = await prisma.user.findUnique({
+      where: {
+        id: req.params.id,
+      },
+      include: {
+        UserPreference: {
+          select: {
+            emailUpdates: true,
+          },
+        },
+      },
+    });
 
     // data = await prisma.post.findMany({
     //   where: {
@@ -72,7 +83,6 @@ app.get("/", async (req, res) => {
 
     console.log(data);
     res.status(200).json({
-      length: data.length,
       data,
     });
   } catch (err) {
@@ -95,7 +105,7 @@ app.delete("/", async (req, res) => {
 app.patch("/:id", async (req, res) => {
   try {
     const id = req.params.id;
-    const { email } = req.body;
+    const { email, emailUpdates } = req.body;
     let data;
 
     // await prisma.user.updateMany({date:{}, where:{}})
@@ -104,12 +114,20 @@ app.patch("/:id", async (req, res) => {
         id,
       },
       data: {
-        email,
-        age: {
-          // increment: 30,
-          // decrement: 10,
-          // multiply: 100,
-          divide: 10,
+        UserPreference: {
+          // update: {
+          //   emailUpdates,
+          // },
+          connect: {
+            id,
+          },
+        },
+      },
+      include: {
+        UserPreference: {
+          select: {
+            emailUpdates: true,
+          },
         },
       },
     });
