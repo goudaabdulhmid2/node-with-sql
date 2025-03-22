@@ -54,51 +54,21 @@ app.post("/", async (req, res) => {
     console.log(err);
   }
 });
-app.get("/:name", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     let data;
-    /*
-    data = await prisma.user.findMany({
-      // where:{
-      //  UserPreference:{
-      //   emailUpdates:true
-      //  }
-      // },
-      // include:{
-      //   UserPreference:{
-      //     select:{
-      //       emailUpdates:true
-      //     }
-      //   }}
-      
-      where:{
-       writtenPosts:{
-        // every:{
-        //   title:'test' // is every single post in that this person writtren, start with the title of test?
-        // }
 
-        // none:{
-        //   title:'test' // has this user written no post
-        // }
+    data = await prisma.user.findMany();
 
-        some:{
-          title:{startsWith:'test'} // do any of thir titles start with test
-        }
-       }
-       },
-
-    })
-
-*/
-    data = await prisma.post.findMany({
-      where: {
-        author: {
-          is: {
-            age: 43,
-          },
-        },
-      },
-    });
+    // data = await prisma.post.findMany({
+    //   where: {
+    //     author: {
+    //       is: {
+    //         age: 43,
+    //       },
+    //     },
+    //   },
+    // });
 
     console.log(data);
     res.status(200).json({
@@ -120,4 +90,30 @@ app.delete("/", async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+app.patch("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { email } = req.body;
+    let data;
+
+    // await prisma.user.updateMany({date:{}, where:{}})
+    data = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        email,
+        age: {
+          // increment: 30,
+          // decrement: 10,
+          // multiply: 100,
+          divide: 10,
+        },
+      },
+    });
+
+    res.status(200).json(data);
+  } catch (err) {}
 });
