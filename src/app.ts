@@ -91,9 +91,38 @@ app.get("/:id", async (req, res) => {
   }
 });
 
-app.delete("/", async (req, res) => {
+app.delete("/:id", async (req, res) => {
   try {
-    await prisma.user.deleteMany();
+    // await prisma.user.deleteMany();
+    // res.status(204).json({
+    //   status: "success",
+    //   data: null,
+    // });
+
+    const id = req.params.id;
+    const user = await prisma.user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        UserPreference: true,
+      },
+    });
+
+    if (user?.UserPreference) {
+      await prisma.userPreference.delete({
+        where: {
+          id: user.UserPreference.id,
+        },
+      });
+    }
+
+    await prisma.user.delete({
+      where: {
+        id: req.params.id,
+      },
+    });
+
     res.status(204).json({
       status: "success",
       data: null,
