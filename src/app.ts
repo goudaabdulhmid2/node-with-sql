@@ -4,7 +4,7 @@ import morgan from 'morgan';
 
 import config from "./config/config";
 const app = config.getApp();
-const prisma = new PrismaClient({log:['query']});
+const prisma = new PrismaClient();
 
 
 app.use(express.json({limit:'100mb'}));
@@ -55,10 +55,51 @@ app.post('/', async (req,res)=>{
     console.log(err);
   }
 })
-app.get("/", async (req, res) => {
+app.get("/:name", async (req, res) => {
   try {
-    const data = await prisma.user.findMany()
-    res.json(data);
+
+    let data;
+
+    // const name = req.params.name
+    // const age = parseInt(req.params.age)
+    // data = await prisma.user.findUnique({
+    //   where:{
+    //     // email
+    //     age_name:{
+    //       age,
+    //       name
+    //     }
+    //   }
+    // })
+
+    const name = req.params.name
+    // data = await prisma.user.findFirst({
+    //   where:{ name,}
+     
+    // })
+
+    data = await prisma.user.findMany({
+      where:{
+        name
+      },
+      orderBy:{
+        age:"asc"
+      },
+      // distinct:['name','age']
+      // pagination
+      take:2,
+      skip:1
+    })
+
+
+
+    
+
+    console.log(data);
+    res.status(200).json({
+      length: data.length,
+      data
+    });
   } catch (err) {
     console.log(err);
   }
