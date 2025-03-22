@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import morgan from "morgan";
 
 import config from "./config/config";
+import { create } from "domain";
 const app = config.getApp();
 const prisma = new PrismaClient();
 
@@ -106,6 +107,10 @@ app.patch("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const { email, emailUpdates } = req.body;
+    let user = await prisma.user.findUnique({
+      where: { id },
+      include: { UserPreference: true },
+    });
     let data;
 
     // await prisma.user.updateMany({date:{}, where:{}})
@@ -114,14 +119,9 @@ app.patch("/:id", async (req, res) => {
         id,
       },
       data: {
-        UserPreference: {
-          // update: {
-          //   emailUpdates,
-          // },
-          connect: {
-            id,
-          },
-        },
+        UserPreference: user?.UserPreference
+          ? { update: { emailUpdates } }
+          : { create: { emailUpdates } },
       },
       include: {
         UserPreference: {
