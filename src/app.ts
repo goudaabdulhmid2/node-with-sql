@@ -80,15 +80,48 @@ app.get("/:name", async (req, res) => {
 
     data = await prisma.user.findMany({
       where:{
-        name
+        // name:{
+        //   // equals:'hawsstrmido',
+        //   // not:'hawsstrmido',
+        //   // in:['hawsstrmido','hawmido']
+        //   notIn:['hawsstrmido','hawmido']
+        // },
+
+        // name:'hawsstrmido',
+
+        // age:{
+        //   // lt:30
+        //   // gt:34
+
+        // }
+
+        // email:{
+        //   // contains:'@gmail.com',
+        //   // endsWith:"co"
+        //   startsWith:'goudaa'
+        // }
+
+        // AND:[
+        //   {email:{startsWith:'goudaa'}},
+        //   {name:'hamido'}
+        // ]
+
+        // AND:[
+        //   {email:{startsWith:'goudaa'}},
+        //   {email:{endsWith:'m'}}
+        // ]
+
+        // OR:[
+        //   {email:{startsWith:'goudaa'}},
+        //   {age:{gt:45}}
+        // ]
+
+        NOT:[
+          {email:{startsWith:'goudaa'}},
+          {age:{gt:45}}
+        ]
+        
       },
-      orderBy:{
-        age:"asc"
-      },
-      // distinct:['name','age']
-      // pagination
-      take:2,
-      skip:1
     })
 
 
